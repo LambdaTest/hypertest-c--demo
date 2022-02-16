@@ -1,0 +1,29 @@
+---
+version: 0.1
+globalTimeout: 150
+testSuiteTimeout: 150
+testSuiteStep: 150
+
+runson: win
+
+autosplit: true
+retryOnFailure: true
+
+maxRetries: 5
+concurrency: 10
+
+mergeArtifacts: true
+
+project: HyperTestDemos.sln
+
+pre:
+  - nuget locals all -clear
+  - dotnet build HyperTestDemos.sln -c Debug
+
+testDiscovery:
+  type: raw
+  mode: static
+  # command: grep 'class' HyperTestDemo -ir --include=\*.cs --exclude=DriverFactory.cs --exclude=HyperTestDemo.AssemblyInfo.cs | awk '{print$4}'
+  command: dotnet run --project HyperTestDiscoverer/HyperTestDiscoverer.csproj /Users/lambdatest/Documents/HyperTestDemos/HyperTestDemo/bin/Debug/netcoreapp3.1/HyperTestDemo.dll
+
+testRunnerCommand: dotnet test HyperTestDemos.sln --filter FullyQualifiedName=$test
